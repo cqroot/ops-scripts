@@ -7,9 +7,9 @@ host2,pass
 
 noPass() {
     for i in $ips;do
-        ip=$(echo $i |cut -d',' -f1)
-        pass=$(echo $i |cut -d',' -f2)
-        noPassExpect ${ip} ${pass}
+        ip=$(echo "$i" |cut -d',' -f1)
+        pass=$(echo "$i" |cut -d',' -f2)
+        noPassExpect "${ip}" "${pass}"
     done
 }
 
@@ -25,8 +25,8 @@ noPassExpect() {
 EOF
 }
 
-if [ -z "${1}" -a -z "${2}" ];then
+if [ -z "${1}" ] && [ -z "${2}" ];then
     noPass
 else
-    noPassExpect ${1} ${2}
+    noPassExpect "${1}" "${2}"
 fi
