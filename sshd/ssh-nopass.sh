@@ -1,4 +1,5 @@
 #!/bin/bash
+# curl -fsSL https://raw.githubusercontent.com/cqroot/ops-scripts/main/sshd/ssh-nopass.sh | bash -s -- -i hosts -p 'password'
 
 print_version() {
   echo "ssh-nopass v0.0.1"
