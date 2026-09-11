@@ -109,3 +109,5 @@ function main() {
 }
 
 main "$@"
+
+# vim: set filetype=bash :
