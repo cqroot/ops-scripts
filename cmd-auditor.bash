@@ -7,6 +7,7 @@ set -euo pipefail
 
 readonly MARKER="# CMD-AUDITOR-WRAPPER-v1"
 
+# 检查当前进程是否具有 root 权限，apply/clean 都要求 root
 function require_root() {
     if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
         echo "Error: must run as root" 1>&2
@@ -14,6 +15,7 @@ function require_root() {
     fi
 }
 
+# 安装审计包装脚本，覆盖目标二进制路径
 function apply() {
     local audit_bin=${1:-}
     local audit_cmd
@@ -54,9 +56,11 @@ echo "[\${START} -> \${END}] [USER=\$(id -un)] [PWD=\$(pwd)] [RC=\${RC}] [ARGS=\
 exit \${RC}
 WRAPPER
     chmod a+x "${tmp_wrapper}"
-    mv -f "${tmp_wrapper}" "${audit_bin}"
+    \mv -f "${tmp_wrapper}" "${audit_bin}"
+    echo "Installed wrapper for ${audit_bin}, log: ${log_file}" 1>&2
 }
 
+# 从备份恢复原二进制，删除包装脚本
 function clean() {
     local audit_bin=${1:-}
     local audit_cmd
@@ -77,8 +81,10 @@ function clean() {
     cp -a "${audit_bin}_bak" "${audit_bin}"
     chmod a+x "${audit_bin}"
     rm -f "${audit_bin}_bak"
+    echo "Restored ${audit_bin} from ${audit_bin}_bak" 1>&2
 }
 
+# 解析子命令和目标二进制路径，分派到 apply 或 clean
 function main() {
     local action=${1:-}
     local audit_bin=${2:-}
